@@ -19,6 +19,7 @@ defined('ABSPATH') || exit;
 /**
  * Enqueue Editor scripts and styles.
  */
+
 function extend_group_enqueue_block_editor_assets()
 {
     $plugin_url  = untrailingslashit(plugin_dir_url(__FILE__));
@@ -39,6 +40,7 @@ add_action('enqueue_block_editor_assets', 'extend_group_enqueue_block_editor_ass
  * 
  * Note: Enable if not using front-end JavaScript to control column order.
  */
+
 function extend_group_block_styles()
 {
     $plugin_path = untrailingslashit(plugin_dir_path(__FILE__));
@@ -61,18 +63,25 @@ add_action('init', 'extend_group_block_styles');
  */
 function extend_group_render_block_columns($block_content, $block)
 {
-    $width = isset($block['attrs']['width']) ? true : false;
 
-    if (!$width) {
+    if (!isset($block['attrs']['width'])) {
         return $block_content;
     }
 
-    // Append the custom class to the block.
-    $p = new WP_HTML_Tag_Processor($block_content);
-    if ($p->next_tag()) {
-        $p->add_class($block['attrs']['width']);
+    $width = $block['attrs']['width'];
+
+    if (class_exists('WP_HTML_Tag_Processor')) {
+        $p = new WP_HTML_Tag_Processor($block_content);
+
+        // Move to the first tag (should be the wrapper div of the block)
+        if ($p->next_tag()) {
+            $p->add_class($width);
+        }
+
+        $block_content = $p->get_updated_html();
+    } else {
+        $block_content = preg_replace('/(<\w+)([^>]*>)/', '$1 class="' . esc_attr($width) . '"$2', $block_content, 1);
     }
-    $block_content = $p->get_updated_html();
 
     return $block_content;
 }

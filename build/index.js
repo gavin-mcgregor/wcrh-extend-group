@@ -293,7 +293,10 @@ function addInspectorControls(BlockEdit) {
       value: "",
       disabled: true
     }, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Normal Width"),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Narrow Width"),
+      value: "page-width-narrow"
+    }, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Default Width"),
       value: "page-width-normal"
     }, {
       label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Extra Width"),

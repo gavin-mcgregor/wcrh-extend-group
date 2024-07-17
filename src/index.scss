@@ -3,6 +3,11 @@
 	margin-right: auto;
 }
 
+.page-width-narrow {
+	width: calc(100% - 2rem);
+	max-width: 1000px;
+}
+
 .page-width-normal {
 	width: calc(100% - 2rem);
 	max-width: 1200px;
@@ -24,6 +29,7 @@
 }
 
 @media (max-width: 320px) {
+	.page-width-narrow,
 	.page-width-normal,
 	.page-width-extra,
 	.page-width-99 {
