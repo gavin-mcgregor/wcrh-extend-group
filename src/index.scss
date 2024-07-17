@@ -22,3 +22,11 @@
 	width: 100%;
 	max-width: unset;
 }
+
+@media (max-width: 320px) {
+	.page-width-normal,
+	.page-width-extra,
+	.page-width-99 {
+		width: calc(100% - 1rem);
+	}
+}
