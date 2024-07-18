@@ -6,6 +6,11 @@
   margin-right: auto;
 }
 
+.page-width-text {
+  width: 100%;
+  max-width: 65ch;
+}
+
 .page-width-narrow {
   width: calc(100% - 2rem);
   max-width: 1000px;

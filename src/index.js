@@ -66,12 +66,13 @@ function addInspectorControls(BlockEdit) {
 
 		// Width options
 		const widthOptions = [
-			{ label: __("Please Select"), value: "", disabled: true },
-			{ label: __("Narrow Width"), value: "page-width-narrow" },
-			{ label: __("Default Width"), value: "page-width-normal" },
-			{ label: __("Extra Width"), value: "page-width-extra" },
-			{ label: __("99% Width"), value: "page-width-99" },
-			{ label: __("Full Width"), value: "page-width-full" },
+			{ label: __("Please Select"), value: "" },
+			{ label: __("Text Width (XS)"), value: "page-width-text" },
+			{ label: __("Narrow Width (SM)"), value: "page-width-narrow" },
+			{ label: __("Default Width (MD)"), value: "page-width-normal" },
+			{ label: __("Extra Width (LG)"), value: "page-width-extra" },
+			{ label: __("99% Width (XL)"), value: "page-width-99" },
+			{ label: __("Full Width (XXL)"), value: "page-width-full" },
 		];
 
 		const { attributes, setAttributes } = props;

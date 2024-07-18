@@ -290,22 +290,24 @@ function addInspectorControls(BlockEdit) {
     // Width options
     const widthOptions = [{
       label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Please Select"),
-      value: "",
-      disabled: true
+      value: ""
     }, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Narrow Width"),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Text Width (XS)"),
+      value: "page-width-text"
+    }, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Narrow Width (SM)"),
       value: "page-width-narrow"
     }, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Default Width"),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Default Width (MD)"),
       value: "page-width-normal"
     }, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Extra Width"),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Extra Width (LG)"),
       value: "page-width-extra"
     }, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("99% Width"),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("99% Width (XL)"),
       value: "page-width-99"
     }, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Full Width"),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Full Width (XXL)"),
       value: "page-width-full"
     }];
     const {
