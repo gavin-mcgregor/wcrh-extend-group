@@ -61,28 +61,65 @@ add_action('init', 'extend_group_block_styles');
 /**
  * Render icons on the frontend.
  */
+// function extend_group_render_block_columns($block_content, $block)
+// {
+
+//     if (!isset($block['attrs']['width'])) {
+//         return $block_content;
+//     }
+
+//     $width = $block['attrs']['width'];
+
+//     if (class_exists('WP_HTML_Tag_Processor')) {
+//         $p = new WP_HTML_Tag_Processor($block_content);
+
+//         // Move to the first tag (should be the wrapper div of the block)
+//         if ($p->next_tag()) {
+//             $p->add_class($width);
+//         }
+
+//         $block_content = $p->get_updated_html();
+//     } else {
+//         $block_content = preg_replace('/(<\w+)([^>]*>)/', '$1 class="' . esc_attr($width) . '"$2', $block_content, 1);
+//     }
+
+//     return $block_content;
+// }
+// add_filter('render_block_core/group', 'extend_group_render_block_columns', 10, 2);
 function extend_group_render_block_columns($block_content, $block)
 {
-
-    if (!isset($block['attrs']['width'])) {
+    if ($block['blockName'] !== 'core/group') {
         return $block_content;
     }
 
-    $width = $block['attrs']['width'];
+    $classes = array();
 
+    if (isset($block['attrs']['width']) && !empty($block['attrs']['width'])) {
+        $classes[] = $block['attrs']['width'];
+    }
+
+    if (isset($block['attrs']['gridMobile']) && !empty($block['attrs']['gridMobile'])) {
+        $classes[] = $block['attrs']['gridMobile'];
+    }
+
+    if (empty($classes)) {
+        return $block_content;
+    }
+
+    // Process the block content to add the classes
     if (class_exists('WP_HTML_Tag_Processor')) {
         $p = new WP_HTML_Tag_Processor($block_content);
 
-        // Move to the first tag (should be the wrapper div of the block)
         if ($p->next_tag()) {
-            $p->add_class($width);
+            $p->add_class(implode(' ', $classes));
         }
 
         $block_content = $p->get_updated_html();
     } else {
-        $block_content = preg_replace('/(<\w+)([^>]*>)/', '$1 class="' . esc_attr($width) . '"$2', $block_content, 1);
+        $block_content = preg_replace('/(<\w+)([^>]*>)/', '$1 class="' . esc_attr(implode(' ', $classes)) . '"$2', $block_content, 1);
     }
 
     return $block_content;
 }
-add_filter('render_block_core/group', 'extend_group_render_block_columns', 10, 2);
+
+add_filter('render_block', 'extend_group_render_block_columns', 10, 2);

@@ -33,6 +33,10 @@ function addAttributes(settings) {
 			type: "string",
 			default: false,
 		},
+		gridMobile: {
+			type: "string",
+			default: false,
+		},
 	};
 
 	const newSettings = {
@@ -64,6 +68,9 @@ function addInspectorControls(BlockEdit) {
 			return <BlockEdit {...props} />;
 		}
 
+		const { attributes, setAttributes } = props;
+		const { width, gridMobile, layout } = attributes;
+
 		// Width options
 		const widthOptions = [
 			{ label: __("Please Select"), value: "" },
@@ -75,8 +82,13 @@ function addInspectorControls(BlockEdit) {
 			{ label: __("Full Width (XXL)"), value: "page-width-full" },
 		];
 
-		const { attributes, setAttributes } = props;
-		const { width } = attributes;
+		// Mob options
+		const gridMobOptions = [
+			{ label: __("Please Select"), value: "" },
+			{ label: __("1 Column"), value: "mob-1-col" },
+			{ label: __("2 Columns"), value: "mob-2-col" },
+			{ label: __("No Change"), value: "mob-no-change" },
+		];
 
 		return (
 			<>
@@ -86,12 +98,30 @@ function addInspectorControls(BlockEdit) {
 						<Flex direction="column">
 							<FlexItem>
 								<SelectControl
-									label={__("Spacer Width")}
+									label={__("Group Width")}
 									value={width || ""}
 									options={widthOptions}
 									onChange={(value) => setAttributes({ width: value })}
 								/>
+								<p>
+									You can chose a maximum width for this group based on
+									predesigned sizes.
+								</p>
 							</FlexItem>
+							{layout?.type === "grid" && (
+								<FlexItem>
+									<SelectControl
+										label={__("Mobile Columns")}
+										value={gridMobile || ""}
+										options={gridMobOptions}
+										onChange={(value) => setAttributes({ gridMobile: value })}
+									/>
+									<p>
+										You can chose to have the grid break into different columns
+										on mobile.
+									</p>
+								</FlexItem>
+							)}
 						</Flex>
 					</PanelBody>
 				</InspectorControls>
@@ -116,11 +146,20 @@ function addClasses(BlockListBlock) {
 	return (props) => {
 		const { name, attributes } = props;
 
-		if ("core/group" !== name || !attributes?.width) {
+		if ("core/group" !== name) {
 			return <BlockListBlock {...props} />;
 		}
 
-		const classes = classnames(props?.className, attributes.width);
+		let newClasses = [];
+
+		if (attributes?.width) {
+			newClasses.push(attributes.width);
+		}
+		if (attributes?.gridMobile) {
+			newClasses.push(attributes.gridMobile);
+		}
+
+		const classes = classnames(props?.className, ...newClasses);
 
 		return <BlockListBlock {...props} className={classes} />;
 	};

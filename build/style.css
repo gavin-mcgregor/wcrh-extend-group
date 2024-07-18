@@ -44,5 +44,13 @@
     width: calc(100% - 1rem);
   }
 }
+@media (max-width: 781px) {
+  .wp-block-group.mob-1-col {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  }
+  .wp-block-group.mob-2-col {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
 
 /*# sourceMappingURL=style.css.map*/
