@@ -37,8 +37,6 @@ add_action('enqueue_block_editor_assets', 'extend_group_enqueue_block_editor_ass
 /**
  * Enqueue block styles 
  * (Applies to both frontend and Editor)
- * 
- * Note: Enable if not using front-end JavaScript to control column order.
  */
 
 function extend_group_block_styles()
@@ -59,33 +57,9 @@ function extend_group_block_styles()
 add_action('init', 'extend_group_block_styles');
 
 /**
- * Render icons on the frontend.
+ * Add classes from editor to the frontend 
  */
-// function extend_group_render_block_columns($block_content, $block)
-// {
 
-//     if (!isset($block['attrs']['width'])) {
-//         return $block_content;
-//     }
-
-//     $width = $block['attrs']['width'];
-
-//     if (class_exists('WP_HTML_Tag_Processor')) {
-//         $p = new WP_HTML_Tag_Processor($block_content);
-
-//         // Move to the first tag (should be the wrapper div of the block)
-//         if ($p->next_tag()) {
-//             $p->add_class($width);
-//         }
-
-//         $block_content = $p->get_updated_html();
-//     } else {
-//         $block_content = preg_replace('/(<\w+)([^>]*>)/', '$1 class="' . esc_attr($width) . '"$2', $block_content, 1);
-//     }
-
-//     return $block_content;
-// }
-// add_filter('render_block_core/group', 'extend_group_render_block_columns', 10, 2);
 function extend_group_render_block_columns($block_content, $block)
 {
     if ($block['blockName'] !== 'core/group') {
@@ -94,14 +68,18 @@ function extend_group_render_block_columns($block_content, $block)
 
     $classes = array();
 
+    if (isset($block['attrs']['fullHeight']) && !empty($block['attrs']['fullHeight'])) {
+        $classes[] = 'min-screen-height';
+    }
     if (isset($block['attrs']['width']) && !empty($block['attrs']['width'])) {
         $classes[] = $block['attrs']['width'];
     }
-
     if (isset($block['attrs']['gridMobile']) && !empty($block['attrs']['gridMobile'])) {
         $classes[] = $block['attrs']['gridMobile'];
     }
-
+    if (isset($block['attrs']['centerVert']) && !empty($block['attrs']['centerVert'])) {
+        $classes[] = 'section-center-vert';
+    }
     if (empty($classes)) {
         return $block_content;
     }

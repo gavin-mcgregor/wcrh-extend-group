@@ -264,6 +264,14 @@ function addAttributes(settings) {
     gridMobile: {
       type: "string",
       default: false
+    },
+    fullHeight: {
+      type: "boolean",
+      default: false
+    },
+    centerVert: {
+      type: "boolean",
+      default: false
     }
   };
   const newSettings = {
@@ -297,7 +305,10 @@ function addInspectorControls(BlockEdit) {
     const {
       width,
       gridMobile,
-      layout
+      layout,
+      fullHeight,
+      tagName,
+      centerVert
     } = attributes;
 
     // Width options
@@ -351,14 +362,34 @@ function addInspectorControls(BlockEdit) {
       onChange: value => setAttributes({
         width: value
       })
-    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "You can chose a maximum width for this group based on predesigned sizes.")), layout?.type === "grid" && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.FlexItem, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
+    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+      class: "wp-desc"
+    }, "You can chose a maximum width for this group based on predesigned sizes.")), layout?.type === "grid" && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.FlexItem, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
       label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Mobile Columns"),
       value: gridMobile || "",
       options: gridMobOptions,
       onChange: value => setAttributes({
         gridMobile: value
       })
-    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "You can chose to have the grid break into different columns on mobile."))))));
+    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+      class: "wp-desc"
+    }, "You can chose to have the grid break into different columns on mobile.")), tagName === "section" && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.FlexItem, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToggleControl, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Min Height: 100%"),
+      checked: !!fullHeight,
+      onChange: () => setAttributes({
+        fullHeight: !fullHeight
+      })
+    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+      class: "wp-desc"
+    }, "Should this block have a minimum height of 100vh (the screen height)?")), fullHeight && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.FlexItem, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToggleControl, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Vertically Centre"),
+      checked: !!centerVert,
+      onChange: () => setAttributes({
+        centerVert: !centerVert
+      })
+    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+      class: "wp-desc"
+    }, "Should the content of this section be centred vertically?")))))));
   };
 }
 (0,_wordpress_hooks__WEBPACK_IMPORTED_MODULE_3__.addFilter)("editor.BlockEdit", "wcrh-extend-group/add-inspector-controls", addInspectorControls);
@@ -380,12 +411,20 @@ function addClasses(BlockListBlock) {
         ...props
       });
     }
+
+    // New Classes
     let newClasses = [];
+    if (attributes?.fullHeight) {
+      newClasses.push("min-screen-height");
+    }
     if (attributes?.width) {
       newClasses.push(attributes.width);
     }
     if (attributes?.gridMobile) {
       newClasses.push(attributes.gridMobile);
+    }
+    if (attributes?.centerVert) {
+      newClasses.push("section-center-vert");
     }
     const classes = classnames__WEBPACK_IMPORTED_MODULE_1___default()(props?.className, ...newClasses);
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(BlockListBlock, {

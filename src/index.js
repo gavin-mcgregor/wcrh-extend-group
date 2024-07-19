@@ -12,6 +12,7 @@ import { InspectorControls } from "@wordpress/block-editor";
 import {
 	PanelBody,
 	SelectControl,
+	ToggleControl,
 	Flex,
 	FlexItem,
 } from "@wordpress/components";
@@ -35,6 +36,14 @@ function addAttributes(settings) {
 		},
 		gridMobile: {
 			type: "string",
+			default: false,
+		},
+		fullHeight: {
+			type: "boolean",
+			default: false,
+		},
+		centerVert: {
+			type: "boolean",
 			default: false,
 		},
 	};
@@ -69,7 +78,8 @@ function addInspectorControls(BlockEdit) {
 		}
 
 		const { attributes, setAttributes } = props;
-		const { width, gridMobile, layout } = attributes;
+		const { width, gridMobile, layout, fullHeight, tagName, centerVert } =
+			attributes;
 
 		// Width options
 		const widthOptions = [
@@ -103,7 +113,7 @@ function addInspectorControls(BlockEdit) {
 									options={widthOptions}
 									onChange={(value) => setAttributes({ width: value })}
 								/>
-								<p>
+								<p class="wp-desc">
 									You can chose a maximum width for this group based on
 									predesigned sizes.
 								</p>
@@ -116,11 +126,48 @@ function addInspectorControls(BlockEdit) {
 										options={gridMobOptions}
 										onChange={(value) => setAttributes({ gridMobile: value })}
 									/>
-									<p>
+									<p class="wp-desc">
 										You can chose to have the grid break into different columns
 										on mobile.
 									</p>
 								</FlexItem>
+							)}
+
+							{tagName === "section" && (
+								<>
+									<FlexItem>
+										<ToggleControl
+											label={__("Min Height: 100%")}
+											checked={!!fullHeight}
+											onChange={() =>
+												setAttributes({
+													fullHeight: !fullHeight,
+												})
+											}
+										/>
+										<p class="wp-desc">
+											Should this block have a minimum height of 100vh (the
+											screen height)?
+										</p>
+									</FlexItem>
+									{fullHeight && (
+										<FlexItem>
+											<ToggleControl
+												label={__("Vertically Centre")}
+												checked={!!centerVert}
+												onChange={() =>
+													setAttributes({
+														centerVert: !centerVert,
+													})
+												}
+											/>
+											<p class="wp-desc">
+												Should the content of this section be centred
+												vertically?
+											</p>
+										</FlexItem>
+									)}
+								</>
 							)}
 						</Flex>
 					</PanelBody>
@@ -150,15 +197,20 @@ function addClasses(BlockListBlock) {
 			return <BlockListBlock {...props} />;
 		}
 
+		// New Classes
 		let newClasses = [];
-
+		if (attributes?.fullHeight) {
+			newClasses.push("min-screen-height");
+		}
 		if (attributes?.width) {
 			newClasses.push(attributes.width);
 		}
 		if (attributes?.gridMobile) {
 			newClasses.push(attributes.gridMobile);
 		}
-
+		if (attributes?.centerVert) {
+			newClasses.push("section-center-vert");
+		}
 		const classes = classnames(props?.className, ...newClasses);
 
 		return <BlockListBlock {...props} className={classes} />;

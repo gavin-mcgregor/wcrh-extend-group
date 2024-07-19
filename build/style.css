@@ -44,6 +44,16 @@
     width: calc(100% - 1rem);
   }
 }
+.min-screen-height {
+  transition: min-height 0.5s ease-in;
+  min-height: calc(100vh + 2px - (var(--header-height) + var(--footer-height)));
+}
+
+.section-center-vert {
+  display: flex;
+  align-items: center;
+}
+
 @media (max-width: 781px) {
   .wp-block-group.mob-1-col {
     grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
