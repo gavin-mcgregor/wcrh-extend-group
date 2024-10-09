@@ -8,11 +8,18 @@ import classnames from "classnames";
  */
 import { __ } from "@wordpress/i18n";
 import { addFilter } from "@wordpress/hooks";
-import { InspectorControls } from "@wordpress/block-editor";
+import {
+	InspectorControls,
+	InnerBlocks,
+	useBlockProps,
+} from "@wordpress/block-editor";
+import { createElement } from "@wordpress/element";
+import { getBlockDefaultClassName } from "@wordpress/blocks";
 import {
 	PanelBody,
 	SelectControl,
 	ToggleControl,
+	TextControl,
 	Flex,
 	FlexItem,
 } from "@wordpress/components";
@@ -43,6 +50,18 @@ function addAttributes(settings) {
 			default: false,
 		},
 		centerVert: {
+			type: "boolean",
+			default: false,
+		},
+		customWidth: {
+			type: "string",
+			default: "",
+		},
+		widthUnit: {
+			type: "string",
+			default: "px",
+		},
+		marginAuto: {
 			type: "boolean",
 			default: false,
 		},
@@ -78,8 +97,17 @@ function addInspectorControls(BlockEdit) {
 		}
 
 		const { attributes, setAttributes } = props;
-		const { width, gridMobile, layout, fullHeight, tagName, centerVert } =
-			attributes;
+		const {
+			width,
+			gridMobile,
+			layout,
+			fullHeight,
+			tagName,
+			centerVert,
+			customWidth,
+			widthUnit,
+			marginAuto,
+		} = attributes;
 
 		// Width options
 		const widthOptions = [
@@ -90,6 +118,7 @@ function addInspectorControls(BlockEdit) {
 			{ label: __("Extra Width (LG)"), value: "page-width-extra" },
 			{ label: __("99% Width (XL)"), value: "page-width-99" },
 			{ label: __("Full Width (XXL)"), value: "page-width-full" },
+			{ label: __("Custom"), value: "page-width-custom" },
 		];
 
 		// Mob options
@@ -171,6 +200,46 @@ function addInspectorControls(BlockEdit) {
 							)}
 						</Flex>
 					</PanelBody>
+					{width === "page-width-custom" && (
+						<PanelBody title={__("Custom Size")}>
+							<Flex direction="column">
+								<FlexItem>
+									<TextControl
+										label={__("Custom Max Width")}
+										value={customWidth || ""}
+										onChange={(value) => setAttributes({ customWidth: value })}
+										placeholder="Enter width value (e.g. 100)"
+									/>
+									<SelectControl
+										label={__("Width Unit")}
+										value={widthUnit || "px"}
+										options={[
+											{ label: "px", value: "px" },
+											{ label: "rem", value: "rem" },
+											{ label: "%", value: "%" },
+											{ label: "vw", value: "vw" },
+											{ label: "ch", value: "ch" },
+										]}
+										onChange={(value) => setAttributes({ widthUnit: value })}
+									/>
+									<p class="wp-desc">
+										Enter a width and select a unit to apply a custom max-width.
+									</p>
+								</FlexItem>
+								<FlexItem>
+									<ToggleControl
+										label={__("Margin: 'Auto'")}
+										checked={!!marginAuto}
+										onChange={() =>
+											setAttributes({
+												marginAuto: !marginAuto,
+											})
+										}
+									/>
+								</FlexItem>
+							</Flex>
+						</PanelBody>
+					)}
 				</InspectorControls>
 			</>
 		);
@@ -197,6 +266,16 @@ function addClasses(BlockListBlock) {
 			return <BlockListBlock {...props} />;
 		}
 
+		// Inline Styles for Custom Width
+		const inlineStyles = {};
+		if (attributes?.customWidth) {
+			inlineStyles.maxWidth = attributes.customWidth + attributes.widthUnit;
+		}
+		if (attributes?.marginAuto) {
+			inlineStyles.marginLeft = "auto";
+			inlineStyles.marginRight = "auto";
+		}
+
 		// New Classes
 		let newClasses = [];
 		if (attributes?.fullHeight) {
@@ -213,7 +292,13 @@ function addClasses(BlockListBlock) {
 		}
 		const classes = classnames(props?.className, ...newClasses);
 
-		return <BlockListBlock {...props} className={classes} />;
+		return (
+			<BlockListBlock
+				{...props}
+				className={classes}
+				wrapperProps={{ style: inlineStyles }}
+			/>
+		);
 	};
 }
 

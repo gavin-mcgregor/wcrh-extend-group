@@ -67,7 +67,9 @@ function extend_group_render_block_columns($block_content, $block)
     }
 
     $classes = array();
+    $inline_styles = array();
 
+    // Check Classes
     if (isset($block['attrs']['fullHeight']) && !empty($block['attrs']['fullHeight'])) {
         $classes[] = 'min-screen-height';
     }
@@ -80,7 +82,18 @@ function extend_group_render_block_columns($block_content, $block)
     if (isset($block['attrs']['centerVert']) && !empty($block['attrs']['centerVert'])) {
         $classes[] = 'section-center-vert';
     }
-    if (empty($classes)) {
+
+    // Check Inline Styles
+    if (isset($block['attrs']['customWidth']) && !empty($block['attrs']['customWidth'])) {
+        $inline_styles['max-width'] = $block['attrs']['customWidth'] . $block['attrs']['widthUnit'];
+    }
+    if (isset($block['attrs']['marginAuto']) && !empty($block['attrs']['marginAuto'])) {
+        $inline_styles['margin-left'] = 'auto';
+        $inline_styles['margin-right'] = 'auto';
+    }
+
+    // If Neither
+    if (empty($classes) && empty($inline_styles)) {
         return $block_content;
     }
 
@@ -88,11 +101,32 @@ function extend_group_render_block_columns($block_content, $block)
     if (class_exists('WP_HTML_Tag_Processor')) {
         $p = new WP_HTML_Tag_Processor($block_content);
 
+
+        // Add Classes
         if ($p->next_tag()) {
             $p->add_class(implode(' ', $classes));
         }
 
+        // Add inline styles
+        // Build the inline styles string
+        $style_string = '';
+        foreach ($inline_styles as $property => $value) {
+            $style_string .= $property . ':' . esc_attr($value) . '; ';
+        }
+
+        // Check for existing styles and concatenate
         $block_content = $p->get_updated_html();
+
+        // Update the block_content with new inline styles
+        if (preg_match('/style="([^"]*)"/', $block_content, $matches)) {
+            // If a style attribute exists, append new styles
+            $existing_styles = trim($matches[1]);
+            $new_style = $existing_styles . '; ' . trim($style_string);
+            $block_content = str_replace($matches[0], 'style="' . esc_attr($new_style) . '"', $block_content);
+        } else {
+            // If no style attribute exists, add it
+            $block_content = preg_replace('/(<\w+)([^>]*>)/', '$1 style="' . esc_attr(trim($style_string)) . '"$2', $block_content, 1);
+        }
     } else {
         $block_content = preg_replace('/(<\w+)([^>]*>)/', '$1 class="' . esc_attr(implode(' ', $classes)) . '"$2', $block_content, 1);
     }
